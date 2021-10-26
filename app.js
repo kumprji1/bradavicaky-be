@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 
 // Importing routes
 const authRoutes = require('./routes/authRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 
 // Enabling .env variables
 const dotenv = require('dotenv');
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
 // Using Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Handeling errors
 app.use((error, req, res, next) => {

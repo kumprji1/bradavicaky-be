@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const HttpError = require("../models/HttpError");
 
+// Utils
 const { Role } = require("../utils/roles");
 
 exports.postLogin = async (req, res, next) => {
@@ -43,8 +44,7 @@ exports.postLogin = async (req, res, next) => {
   // Removing password before sending to client
   user.password = null;
 
-  console.log("Returning user: ", user)
-  return res.json(user);
+  res.json(user);
 };
 
 exports.postRegisterAdmin = async (req, res, next) => {
@@ -85,4 +85,6 @@ exports.postRegisterAdmin = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError("Nepodařilo se uložit učitele", 500));
   }
+
+  res.json({msg: 'Admin created!'})
 };
