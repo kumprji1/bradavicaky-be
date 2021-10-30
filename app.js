@@ -46,7 +46,7 @@ app.use((error, req, res, next) => {
 
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.orv11.mongodb.net/${process.env.DB_DATABASE}?retryWrites=true`)
 .then(() => {
-	app.listen(process.env.DB_PORT)
-	return console.log('Aplikace běží na portu: ', process.env.DB_PORT)
+	app.listen(process.env.PORT)
+	return console.log('Aplikace běží na portu: ', process.env.PORT)
 })
 .catch(() => console.log("Aplikace se nepřipojila k databázi"));
