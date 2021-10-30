@@ -22,6 +22,14 @@ const userSchema = new Schema({
     role: {
         type: String,
         required: true
+    },
+    college: {
+        type: String,
+        required: false
+    },
+    points: {
+        type: Number,
+        required: false
     }
 })
 

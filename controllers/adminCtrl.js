@@ -1,11 +1,11 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
 // Models
-const User = require('../models/User')
-const HttpError = require('../models/HttpError')
+const User = require("../models/User");
+const HttpError = require("../models/HttpError");
 
 // Utils
-const { Role } = require('../utils/roles');
+const { Role } = require("../utils/roles");
 
 exports.postRegisterPupil = async (req, res, next) => {
   // Finding existing user with given username
@@ -17,10 +17,12 @@ exports.postRegisterPupil = async (req, res, next) => {
   }
 
   // Username has to be unique
-  if (existsPupil) return next(new HttpError("User with given username already exists", 401));
+  if (existsPupil)
+    return next(new HttpError("User with given username already exists", 401));
 
   // Comparing passwords
-  if (req.body.password !== req.body.rePassword) return next(new HttpError("Passwords don't match!", 401));
+  if (req.body.password !== req.body.rePassword)
+    return next(new HttpError("Passwords don't match!", 401));
 
   let hashedPassword = "";
 
@@ -37,6 +39,8 @@ exports.postRegisterPupil = async (req, res, next) => {
     username: req.body.username,
     password: hashedPassword,
     role: Role.PUPIL,
+    college: req.body.college,
+    points: 0,
   });
 
   // Saving to the database
@@ -46,6 +50,47 @@ exports.postRegisterPupil = async (req, res, next) => {
     return next(new HttpError("Nepodařilo se uložit žáka", 500));
   }
 
-  res.json({msg: 'Pupil created!'})
+  res.json({ msg: "Nový čaroděj mezi námi!" });
+};
 
-}
+// Returns list of pupils
+exports.getPupils = async (req, res, next) => {
+  let pupils;
+  try {
+    pupils = await User.find({ role: Role.PUPIL }, "-password").lean();
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se načíst čaroděje", 500));
+  }
+  res.json(pupils);
+};
+
+// Adds points to pupil (pupilsId, points)
+exports.patchAddPointsById = async (req, res, next) => {
+  // Updates pupils points like -> points += points;
+  let pupil;
+  try {
+    pupil = await User.findOneAndUpdate(
+      { _id: req.body.pupilsId },
+      { $inc: { points: req.body.points } }
+    );
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se přidat body", 500));
+  }
+  res.json({msg: 'success', points: pupil.points + req.body.points})
+};
+
+// Removes points from pupil (pupilsId, points)
+exports.patchRemovePointsById = async (req, res, next) => {
+  // Updates pupils points like -> points -= points;
+  let pupil;
+  try {
+    pupil = await User.findOneAndUpdate(
+      { _id: req.body.pupilsId },
+      { $inc: { points: -req.body.points } }
+    );
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se odebrat body", 500));
+  }
+  res.json({msg: 'success', points: pupil.points - req.body.points})
+};
+
