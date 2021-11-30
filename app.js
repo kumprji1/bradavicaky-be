@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 // Importing routes
 const authRoutes = require('./routes/authRoutes')
 const adminRoutes = require('./routes/adminRoutes')
+const sharedRoutes = require('./routes/sharedRoutes')
 
 // Enabling .env variables
 const dotenv = require('dotenv');
@@ -32,6 +33,7 @@ app.use(express.static(path.join('public')))
 // Using Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', sharedRoutes);
 
 // Serving react app
 app.use((req, res) => {
@@ -49,4 +51,7 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
 	app.listen(process.env.PORT)
 	return console.log('Aplikace běží na portu: ', process.env.PORT)
 })
-.catch(() => console.log("Aplikace se nepřipojila k databázi"));
+.catch((error) => {
+	console.log("Aplikace se nepřipojila k databázi")
+	console.log(error)
+});

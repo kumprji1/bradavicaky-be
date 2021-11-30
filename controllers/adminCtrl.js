@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 // Models
 const User = require("../models/User");
 const HttpError = require("../models/HttpError");
-
+const Product = require('../models/Product')
 // Utils
 const { Role } = require("../utils/roles");
 
@@ -93,4 +93,25 @@ exports.patchRemovePointsById = async (req, res, next) => {
   }
   res.json({msg: 'success', points: pupil.points - req.body.points})
 };
+
+// Adds new product
+exports.postAddProduct = async (req, res, next) => {
+  const newProduct = new Product({
+    title: req.body.title,
+    photo: req.body.photo,
+    desc: req.body.desc,
+    price: req.body.price,
+    quantity: req.body.quantity,
+    isHidden: false,
+    owners: []
+  })
+
+  try {
+    await newProduct.save()
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se uložit produkt", 500));
+  }
+
+  res.json({ msg: 'success' });
+}
 
