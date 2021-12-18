@@ -103,6 +103,8 @@ exports.postAddProduct = async (req, res, next) => {
     price: req.body.price,
     quantity: req.body.quantity,
     isHidden: false,
+    maxPiecesPerPupil: 0,
+    preorderedBy: [],
     owners: []
   })
 
@@ -113,5 +115,5 @@ exports.postAddProduct = async (req, res, next) => {
   }
 
   res.json({ msg: 'success' });
-}
+};
 

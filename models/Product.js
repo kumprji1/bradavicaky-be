@@ -19,15 +19,29 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
+    // Remaining count of pieces left
     quantity: {
         type: String,
         required: true
     },
+    // Product is shown to pupils or not
     isHidden: {
-        type: String,
+        type: Boolean,
         required: false
     },
+    // How many times can this product be bouhgt by one pupil (0 → unlimited)
+    maxPiecesPerPupil: {
+        type: Number,
+        required: true
+    },
+    // Confirmed owners (Pupil really owns a product, that can't be refund)
     owners: [{
+        ref: 'User',
+        type: mongoose.Types.ObjectId,
+        required: false
+    }],
+    // Pupil bought product, waiting for delivering, while he can refund
+    preorderedBy: [{
         ref: 'User',
         type: mongoose.Types.ObjectId,
         required: false

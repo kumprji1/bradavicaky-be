@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const authRoutes = require('./routes/authRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const sharedRoutes = require('./routes/sharedRoutes')
+const pupilRoutes = require('./routes/pupilRoutes')
 
 // Enabling .env variables
 const dotenv = require('dotenv');
@@ -33,6 +34,7 @@ app.use(express.static(path.join('public')))
 // Using Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/pupil', pupilRoutes);
 app.use('/api', sharedRoutes);
 
 // Serving react app

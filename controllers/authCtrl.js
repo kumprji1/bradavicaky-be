@@ -34,6 +34,7 @@ exports.postLogin = async (req, res, next) => {
 
   // Generating token
   user.token = jwt.sign({
+    userId: user._id,
     username: user.username,
     name: user.name,
     surname: user.surname,
