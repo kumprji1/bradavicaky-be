@@ -30,7 +30,17 @@ const userSchema = new Schema({
     points: {
         type: Number,
         required: false
-    }
+    },
+    orderedProducts: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Product',
+        required: false
+    }],
+    deliveredProducts: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Product',
+        required: false
+    }]
 })
 
 module.exports = mongoose.model('User', userSchema)

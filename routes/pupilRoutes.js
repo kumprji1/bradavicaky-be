@@ -14,6 +14,10 @@ router.get('/avaible-products', pupilCtrl.getAvaibleProducts)
 // Below only authorized routes for pupil
 router.use(readToken, isPupil) 
 
+router.get('/ordered-products/:pupilId', pupilCtrl.getOrderedProducts)
+
 router.post('/buy-product/:productId', pupilCtrl.postBuyProduct)
+
+router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
 
 module.exports = router;

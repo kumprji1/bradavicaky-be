@@ -104,8 +104,8 @@ exports.postAddProduct = async (req, res, next) => {
     quantity: req.body.quantity,
     isHidden: false,
     maxPiecesPerPupil: 0,
-    preorderedBy: [],
-    owners: []
+    owners: [],
+    orderedBy: []
   })
 
   try {

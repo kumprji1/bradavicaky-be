@@ -41,7 +41,7 @@ const productSchema = new Schema({
         required: false
     }],
     // Pupil bought product, waiting for delivering, while he can refund
-    preorderedBy: [{
+    orderedBy: [{
         ref: 'User',
         type: mongoose.Types.ObjectId,
         required: false
