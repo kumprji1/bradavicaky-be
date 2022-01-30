@@ -15,9 +15,9 @@ router.get('/avaible-products', pupilCtrl.getAvaibleProducts)
 router.use(readToken, isPupil) 
 
 router.get('/ordered-products/:pupilId', pupilCtrl.getOrderedProducts)
+router.get('/delivered-products/:pupilId', pupilCtrl.getDeliveredProducts)
 
 router.post('/buy-product/:productId', pupilCtrl.postBuyProduct)
-
 router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
 
 module.exports = router;

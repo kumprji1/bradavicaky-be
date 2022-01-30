@@ -165,3 +165,16 @@ exports.getOrderedProducts = async (req, res, next) => {
 exports.postRefundProduct = async (req, res, next) => {
     next();
 }
+
+exports.getDeliveredProducts = async (req, res, next) => {
+  const pupilId = req.params.pupilId;
+
+  let pupil;
+  try {
+    pupil = await User.findById(pupilId).populate("deliveredProducts");
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se načíst produkty", 500));
+  }
+  
+  res.json(pupil.deliveredProducts)
+};

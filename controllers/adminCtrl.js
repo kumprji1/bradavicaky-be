@@ -3,9 +3,10 @@ const bcrypt = require("bcrypt");
 // Models
 const User = require("../models/User");
 const HttpError = require("../models/HttpError");
-const Product = require('../models/Product')
+const Product = require("../models/Product");
 // Utils
 const { Role } = require("../utils/roles");
+const Order = require("../models/Order");
 
 exports.postRegisterPupil = async (req, res, next) => {
   // Finding existing user with given username
@@ -76,7 +77,7 @@ exports.patchAddPointsById = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError("Nepodařilo se přidat body", 500));
   }
-  res.json({msg: 'success', points: pupil.points + req.body.points})
+  res.json({ msg: "success", points: pupil.points + req.body.points });
 };
 
 // Removes points from pupil (pupilsId, points)
@@ -91,7 +92,17 @@ exports.patchRemovePointsById = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError("Nepodařilo se odebrat body", 500));
   }
-  res.json({msg: 'success', points: pupil.points - req.body.points})
+  res.json({ msg: "success", points: pupil.points - req.body.points });
+};
+
+exports.getProducts = async (req, res, next) => {
+  let products = [];
+  try {
+    products = await Product.find();
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se načíst produkty", 500));
+  }
+  res.json(products);
 };
 
 // Adds new product
@@ -105,15 +116,74 @@ exports.postAddProduct = async (req, res, next) => {
     isHidden: false,
     maxPiecesPerPupil: 0,
     owners: [],
-    orderedBy: []
-  })
+    orderedBy: [],
+  });
 
   try {
-    await newProduct.save()
+    await newProduct.save();
   } catch (err) {
     return next(new HttpError("Nepodařilo se uložit produkt", 500));
   }
 
-  res.json({ msg: 'success' });
+  res.json({ msg: "success" });
 };
 
+// Returns undelivered products(for admin to deliver)
+exports.getUndeliveredOrders = async (req, res, next) => {
+  let orders = [];
+  try {
+    orders = await Order.find({ delivered: false }).populate(
+      "pupilId productId"
+    );
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se načíst objednávky", 500));
+  }
+  res.json(orders);
+};
+
+// Delivers Order (Finishish order)
+exports.patchDeliverOrder = async (req, res, next) => {
+  let order;
+  let pupil;
+  let product;
+
+  // Finding order and setting delivered to true
+  try {
+    order = await Order.findOneAndUpdate(
+      { _id: req.params.orderId },
+      // změnit na True a smazat komentář
+      { delivered: true }
+    );
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se doručit objednávku", 500));
+  }
+
+  // Finds pupil
+  try {
+    pupil = await User.findById(order.pupilId);
+    console.log("Pupil: ", pupil);
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se najít žáka", 500));
+  }
+
+  // Finds product
+  try {
+    product = await Product.findById(order.productId);
+    console.log("Product: ", product);
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se najít produkt", 500));
+  }
+
+  // Adds IDs to product and pupil
+  product.owners.push(order.pupilId);
+  pupil.deliveredProducts.push(order.productId);
+
+  try {
+    await product.save();
+    await pupil.save();
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se doručit objednávku", 500));
+  }
+
+  res.json({ msg: "success" });
+};

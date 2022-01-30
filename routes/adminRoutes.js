@@ -13,7 +13,12 @@ router.patch('/add-points', adminCtrl.patchAddPointsById)
 router.patch('/remove-points', adminCtrl.patchRemovePointsById)
 
 // Product Management
+router.get('/products', adminCtrl.getProducts)
 router.post('/add-product', adminCtrl.postAddProduct)
+
+// Orders
+router.get('/undelivered-orders', adminCtrl.getUndeliveredOrders)
+router.patch('/deliver-order/:orderId', adminCtrl.patchDeliverOrder)
 
 
 module.exports = router;

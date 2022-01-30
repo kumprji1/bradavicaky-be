@@ -29,6 +29,10 @@ const productSchema = new Schema({
         type: Boolean,
         required: false
     },
+    deleted: {
+        type: Boolean,
+        required: false
+    },
     // How many times can this product be bouhgt by one pupil (0 → unlimited)
     maxPiecesPerPupil: {
         type: Number,
