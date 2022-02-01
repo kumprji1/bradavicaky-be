@@ -20,5 +20,8 @@ router.post('/add-product', adminCtrl.postAddProduct)
 router.get('/undelivered-orders', adminCtrl.getUndeliveredOrders)
 router.patch('/deliver-order/:orderId', adminCtrl.patchDeliverOrder)
 
+// Events
+router.post('/add-event', adminCtrl.postAddEvent)
+router.delete('/event/:eventId', adminCtrl.deleteEvent)
 
 module.exports = router;

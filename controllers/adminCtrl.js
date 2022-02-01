@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const HttpError = require("../models/HttpError");
 const Product = require("../models/Product");
+const Event = require('../models/Event')
+
 // Utils
 const { Role } = require("../utils/roles");
 const Order = require("../models/Order");
@@ -187,3 +189,28 @@ exports.patchDeliverOrder = async (req, res, next) => {
 
   res.json({ msg: "success" });
 };
+
+exports.postAddEvent = async (req, res, next) => {
+  const event = new Event({
+    title: req.body.title,
+    description: req.body.description,
+    date: req.body.date,
+    createdAt: new Date()
+  })
+
+  try {
+    await event.save()
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se uložit událost', 500))
+  }
+  res.json({msg: 'success'})
+}
+
+exports.deleteEvent = async (req, res, next) => {
+  try {
+    await Event.deleteOne({_id: req.params.eventId})
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se odstranit událost', 500))
+  }
+  res.json({msg: 'success'})
+}

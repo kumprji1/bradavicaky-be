@@ -73,7 +73,7 @@ exports.postBuyProduct = async (req, res, next) => {
     }
 
     // When pupil bought max pieces that he is allowed to, he can't buy more and he gets an error
-    if (orderedCount === product.maxPiecesPerPupil)
+    if (orderedCount >= product.maxPiecesPerPupil)
       return next(
         new HttpError(
           "Byl dosažen maximální počet kusů k zakoupení tohoto zboží pro jednoho žáka",
@@ -110,9 +110,11 @@ exports.postBuyProduct = async (req, res, next) => {
   } catch (err) {
     return next(new HttpError("Nepodařilo se koupit produkt.", 500));
   }
+
+  res.json({msg: 'success'})
 };
 
-// Původní způsob
+// Původní způsob 
 // exports.postBuyProduct = async (req, res, next) => {
 //     const productId = req.params.productId;
 //     const pupilId = req.user.userId;
@@ -149,32 +151,32 @@ exports.postBuyProduct = async (req, res, next) => {
 //     }
 // }
 
-exports.getOrderedProducts = async (req, res, next) => {
+// Returns undelivered orders
+exports.getUndeliveredOrders = async (req, res, next) => {
   const pupilId = req.params.pupilId;
 
-  let pupil;
+  let orders;
   try {
-    pupil = await User.findById(pupilId).populate("orderedProducts");
+    orders = await Order.find({pupilId: pupilId, delivered: false}).populate("productId");
   } catch (err) {
-    return next(new HttpError("Nepodařilo se načíst produkty", 500));
+    return next(new HttpError("Nepodařilo se načíst nedoručené objednávky", 500));
   }
   
-  res.json(pupil.orderedProducts)
+  res.json(orders)
+};
+
+exports.getDeliveredOrders = async (req, res, next) => {
+  const pupilId = req.params.pupilId;
+
+  let orders;
+  try {
+    orders = await Order.find({pupilId: pupilId, delivered: true}).populate("productId");
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se načíst doručené objednávky", 500));
+  }
+  res.json(orders)
 };
 
 exports.postRefundProduct = async (req, res, next) => {
-    next();
+  next();
 }
-
-exports.getDeliveredProducts = async (req, res, next) => {
-  const pupilId = req.params.pupilId;
-
-  let pupil;
-  try {
-    pupil = await User.findById(pupilId).populate("deliveredProducts");
-  } catch (err) {
-    return next(new HttpError("Nepodařilo se načíst produkty", 500));
-  }
-  
-  res.json(pupil.deliveredProducts)
-};

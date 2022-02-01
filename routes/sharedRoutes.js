@@ -6,4 +6,6 @@ const router = express.Router();
 
 router.get('/products', sharedCtrl.getProducts)
 
+router.get('/events', sharedCtrl.getEvents)
+
 module.exports = router;

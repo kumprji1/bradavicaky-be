@@ -14,8 +14,8 @@ router.get('/avaible-products', pupilCtrl.getAvaibleProducts)
 // Below only authorized routes for pupil
 router.use(readToken, isPupil) 
 
-router.get('/ordered-products/:pupilId', pupilCtrl.getOrderedProducts)
-router.get('/delivered-products/:pupilId', pupilCtrl.getDeliveredProducts)
+router.get('/undelivered-orders/:pupilId', pupilCtrl.getUndeliveredOrders)
+router.get('/delivered-orders/:pupilId', pupilCtrl.getDeliveredOrders)
 
 router.post('/buy-product/:productId', pupilCtrl.postBuyProduct)
 router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
