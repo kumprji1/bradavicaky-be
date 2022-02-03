@@ -24,4 +24,12 @@ router.patch('/deliver-order/:orderId', adminCtrl.patchDeliverOrder)
 router.post('/add-event', adminCtrl.postAddEvent)
 router.delete('/event/:eventId', adminCtrl.deleteEvent)
 
+// Questions
+router.post('/add-question', adminCtrl.addQuestion)
+
+// Answers
+router.post('/create-answer', adminCtrl.postCreateAnswer)
+router.delete('/answer/:answerId', adminCtrl.deleteAnswer)
+
+
 module.exports = router;

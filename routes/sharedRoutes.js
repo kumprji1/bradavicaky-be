@@ -8,4 +8,9 @@ router.get('/products', sharedCtrl.getProducts)
 
 router.get('/events', sharedCtrl.getEvents)
 
+router.get('/questions', sharedCtrl.getQuestions)
+router.get('/question/:questionId', sharedCtrl.getQuestionById)
+
+router.get('/answers-of-question/:questionId', sharedCtrl.getAnswersOfQuesntionById)
+
 module.exports = router;

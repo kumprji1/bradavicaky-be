@@ -5,10 +5,13 @@ const User = require("../models/User");
 const HttpError = require("../models/HttpError");
 const Product = require("../models/Product");
 const Event = require('../models/Event')
+const Question = require("../models/Question");
+const Answer = require("../models/Answer");
 
 // Utils
 const { Role } = require("../utils/roles");
 const Order = require("../models/Order");
+const res = require("express/lib/response");
 
 exports.postRegisterPupil = async (req, res, next) => {
   // Finding existing user with given username
@@ -190,6 +193,7 @@ exports.patchDeliverOrder = async (req, res, next) => {
   res.json({ msg: "success" });
 };
 
+
 exports.postAddEvent = async (req, res, next) => {
   const event = new Event({
     title: req.body.title,
@@ -211,6 +215,49 @@ exports.deleteEvent = async (req, res, next) => {
     await Event.deleteOne({_id: req.params.eventId})
   } catch (err) {
     return next(new HttpError('Nepodařilo se odstranit událost', 500))
+  }
+  res.json({msg: 'success'})
+}
+
+exports.addQuestion = async (req, res, next) => {
+  const question = new Question({
+    text: req.body.text,
+    createdAt: new Date()
+  })
+  let result;
+  try {
+    result = await question.save()
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se uložit otázku', 500))
+  }
+  console.log(result)
+  res.json({msg: 'success', question: result})
+}
+
+exports.postCreateAnswer = async (req, res, next) => {
+  const answer = new Answer({
+    text: req.body.text,
+    questionId: req.body.questionId,
+    createdAt: new Date(),
+    deleted: false
+  })
+  console.log(answer)
+  let result;
+  try {
+    result = await answer.save()
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se vytvořit odpověď', 500))
+  }
+  console.log(result)
+  res.json({msg: 'success', answer: result})
+
+}
+
+exports.deleteAnswer = async (req, res, next) => {
+  try {
+    await Answer.findOneAndUpdate({_id: req.params.answerId}, {deleted: true})
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se odstranit odpověď', 500))
   }
   res.json({msg: 'success'})
 }
