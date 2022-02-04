@@ -20,4 +20,6 @@ router.get('/delivered-orders/:pupilId', pupilCtrl.getDeliveredOrders)
 router.post('/buy-product/:productId', pupilCtrl.postBuyProduct)
 router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
 
+router.post('/add-vote', pupilCtrl.postVote)
+
 module.exports = router;

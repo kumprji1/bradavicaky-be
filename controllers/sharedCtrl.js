@@ -4,6 +4,7 @@ const Event = require('../models/Event')
 const HttpError = require('../models/HttpError');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
+const Vote = require('../models/Vote');
 
 // Returns all products
 exports.getProducts = async (req, res, next) => {
@@ -56,4 +57,14 @@ exports.getAnswersOfQuesntionById = async (req, res, next) => {
         return next(new HttpError('Nepodařilo se načíst odpovědi', 500))
     }
     res.json(answers)
+}
+
+exports.getVotesOfQuestionById = async (req, res, next) => {
+    let votes = [];
+    try {
+        votes = await Vote.find({questionId: req.params.questionId});
+    } catch (err) {
+        return next(new HttpError('Nepodařilo se načíst hlasy', 500))
+    }
+    res.json(votes)
 }

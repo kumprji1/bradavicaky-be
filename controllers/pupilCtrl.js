@@ -3,7 +3,7 @@ const User = require("../models/User");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
 const HttpError = require("../models/HttpError");
-const { getPupils } = require("./adminCtrl");
+const Vote = require("../models/Vote");
 
 // Returns points by username
 exports.getPointsByUsername = async (req, res, next) => {
@@ -179,4 +179,35 @@ exports.getDeliveredOrders = async (req, res, next) => {
 
 exports.postRefundProduct = async (req, res, next) => {
   next();
+}
+
+exports.postVote = async (req, res, next) => {
+  // Finds if pupil already voted on this question
+  let existingVote;
+  try {
+    existingVote = await Vote.find({pupilId: req.body.pupilId, questionId: req.body.questionId})
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se zjistit, zda žák již hlasoval', 500))
+  } 
+
+  if (existingVote.length > 0) 
+  return next(new HttpError('Uživatel již hlasoval', 500))
+
+  // vote
+  const vote = new Vote({
+    createdAt: new Date(),
+    pupilId: req.body.pupilId,
+    questionId: req.body.questionId,
+    answerId: req.body.answerId
+  })
+  try {
+    await vote.save()
+  } catch (err) {
+    return next(new HttpError('Nepodařilo se hlasovat', 500))
+  }
+  res.json({msg: 'success'})
+}
+
+exports.getCanTryLuck = async (req, res, next) => {
+  
 }
