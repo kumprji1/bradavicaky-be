@@ -101,6 +101,17 @@ exports.patchRemovePointsById = async (req, res, next) => {
   res.json({ msg: "success", points: pupil.points - req.body.points });
 };
 
+exports.getProductById = async (req, res, next) => {
+  let product = {};
+  try {
+    product = await Product.findById(req.params.productId);
+    console.log(product);
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se načíst produkt", 500));
+  }
+  res.json(product);
+};
+
 exports.getProducts = async (req, res, next) => {
   let products = [];
   try {
@@ -120,6 +131,7 @@ exports.postAddProduct = async (req, res, next) => {
     price: req.body.price,
     quantity: req.body.quantity,
     isHidden: false,
+    // maxPiecesPerPupil( 0 → unlimited)
     maxPiecesPerPupil: 0,
     owners: [],
     orderedBy: [],
@@ -131,6 +143,32 @@ exports.postAddProduct = async (req, res, next) => {
     return next(new HttpError("Nepodařilo se uložit produkt", 500));
   }
 
+  res.json({ msg: "success" });
+};
+
+exports.patchEditProduct = async (req, res, next) => {
+  try {
+    await Product.findByIdAndUpdate(req.params.productId, {
+      title: req.body.title,
+      photo: req.body.photo,
+      desc: req.body.desc,
+      price: req.body.price,
+      quantity: req.body.quantity,
+    });
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se editovat produkt", 500));
+  }
+  res.json({ msg: "success" });
+};
+
+exports.patchDisableProduct = async (req, res, next) => {
+  try {
+    await Product.findByIdAndUpdate(req.params.productId, {
+      isHidden: true,
+    });
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se odstranit produkt", 500));
+  }
   res.json({ msg: "success" });
 };
 
@@ -232,6 +270,15 @@ exports.addQuestion = async (req, res, next) => {
   }
   console.log(result);
   res.json({ msg: "success", question: result });
+};
+
+exports.editQuestion = async (req, res, next) => {
+  try {
+    await Question.findByIdAndUpdate(req.params.questionId, { text: req.body.text });
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se aktualizovat otázku", 500));
+  }
+  res.json({ msg: "success"});
 };
 
 exports.postCreateAnswer = async (req, res, next) => {

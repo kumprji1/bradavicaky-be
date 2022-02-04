@@ -14,7 +14,10 @@ router.patch('/remove-points', adminCtrl.patchRemovePointsById)
 
 // Product Management
 router.get('/products', adminCtrl.getProducts)
+router.get('/product/:productId', adminCtrl.getProductById)
+router.patch('/edit-product/:productId', adminCtrl.patchEditProduct)
 router.post('/add-product', adminCtrl.postAddProduct)
+router.patch('/disable-product/:productId', adminCtrl.patchDisableProduct)
 
 // Orders
 router.get('/undelivered-orders', adminCtrl.getUndeliveredOrders)
@@ -26,6 +29,7 @@ router.delete('/event/:eventId', adminCtrl.deleteEvent)
 
 // Questions
 router.post('/add-question', adminCtrl.addQuestion)
+router.patch('/edit-question/:questionId', adminCtrl.editQuestion)
 
 // Answers
 router.post('/create-answer', adminCtrl.postCreateAnswer)

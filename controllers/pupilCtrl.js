@@ -231,24 +231,27 @@ exports.getCanRoll = async (req, res, next) => {
   } catch (error) {
     return next("Nepodařilo se načíst datum posledního pokusu");
   }
-  res.json({msg: 'success', canRoll: canRoll})
+  res.json({ msg: "success", canRoll: canRoll });
 };
 
 exports.postRoll = async (req, res, next) => {
-  console.log('ROLL')
-  let text = '';
-  for(let i = 0; i<100; i++) {
-    const points = Math.round(Math.random() * 4 - 1)
-    if (points > 0) text = 'Získal jsi ' + points + ' B. Zkus to zase zítra ;)'
-    if (points < 0) text = 'Přišel jsi o ' + -points + ' B. Zkus to zase zítra ;)'
-    if (points == 0) text = 'Dneska nezískáváš, ani neztrácíš. Zkus to zase zítra ;)'
-    // console.log('points: ', points, 'text: ', text)
-  }
+  let text = "";
+  const points = Math.round(Math.random() * 4 - 1);
+  if (points > 0) text = "Získal jsi " + points + " B. Zkus to zase zítra ;)";
+  if (points < 0)
+    text = "Přišel jsi o " + -points + " B. Zkus to zase zítra ;)";
+  if (points == 0)
+    text = "Dneska nezískáváš, ani neztrácíš. Zkus to zase zítra ;)";
+  // console.log('points: ', points, 'text: ', text)
+
   try {
     // Set current time as last rollTime
-    // await User.findByIdAndUpdate(req.user.userId, { lastRoll: new Date() });
+    await User.findByIdAndUpdate(req.user.userId, {
+      lastRoll: new Date(),
+      $inc: { points: points },
+    });
   } catch (error) {
     return next("Nepodařilo se uložit datum pokusu");
   }
-  res.json({msg: 'success', text: text})
+  res.json({ msg: "success", text: text });
 };
