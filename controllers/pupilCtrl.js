@@ -245,6 +245,7 @@ exports.postRoll = async (req, res, next) => {
     // console.log('points: ', points, 'text: ', text)
   }
   try {
+    // Set current time as last rollTime
     // await User.findByIdAndUpdate(req.user.userId, { lastRoll: new Date() });
   } catch (error) {
     return next("Nepodařilo se uložit datum pokusu");
