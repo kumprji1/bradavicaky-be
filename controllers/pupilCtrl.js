@@ -111,10 +111,10 @@ exports.postBuyProduct = async (req, res, next) => {
     return next(new HttpError("Nepodařilo se koupit produkt.", 500));
   }
 
-  res.json({msg: 'success'})
+  res.json({ msg: "success" });
 };
 
-// Původní způsob 
+// Původní způsob
 // exports.postBuyProduct = async (req, res, next) => {
 //     const productId = req.params.productId;
 //     const pupilId = req.user.userId;
@@ -157,12 +157,16 @@ exports.getUndeliveredOrders = async (req, res, next) => {
 
   let orders;
   try {
-    orders = await Order.find({pupilId: pupilId, delivered: false}).populate("productId");
+    orders = await Order.find({ pupilId: pupilId, delivered: false }).populate(
+      "productId"
+    );
   } catch (err) {
-    return next(new HttpError("Nepodařilo se načíst nedoručené objednávky", 500));
+    return next(
+      new HttpError("Nepodařilo se načíst nedoručené objednávky", 500)
+    );
   }
-  
-  res.json(orders)
+
+  res.json(orders);
 };
 
 exports.getDeliveredOrders = async (req, res, next) => {
@@ -170,44 +174,80 @@ exports.getDeliveredOrders = async (req, res, next) => {
 
   let orders;
   try {
-    orders = await Order.find({pupilId: pupilId, delivered: true}).populate("productId");
+    orders = await Order.find({ pupilId: pupilId, delivered: true }).populate(
+      "productId"
+    );
   } catch (err) {
     return next(new HttpError("Nepodařilo se načíst doručené objednávky", 500));
   }
-  res.json(orders)
+  res.json(orders);
 };
 
 exports.postRefundProduct = async (req, res, next) => {
   next();
-}
+};
 
 exports.postVote = async (req, res, next) => {
   // Finds if pupil already voted on this question
   let existingVote;
   try {
-    existingVote = await Vote.find({pupilId: req.body.pupilId, questionId: req.body.questionId})
+    existingVote = await Vote.find({
+      pupilId: req.body.pupilId,
+      questionId: req.body.questionId,
+    });
   } catch (err) {
-    return next(new HttpError('Nepodařilo se zjistit, zda žák již hlasoval', 500))
-  } 
+    return next(
+      new HttpError("Nepodařilo se zjistit, zda žák již hlasoval", 500)
+    );
+  }
 
-  if (existingVote.length > 0) 
-  return next(new HttpError('Uživatel již hlasoval', 500))
+  if (existingVote.length > 0)
+    return next(new HttpError("Uživatel již hlasoval", 500));
 
   // vote
   const vote = new Vote({
     createdAt: new Date(),
     pupilId: req.body.pupilId,
     questionId: req.body.questionId,
-    answerId: req.body.answerId
-  })
+    answerId: req.body.answerId,
+  });
   try {
-    await vote.save()
+    await vote.save();
   } catch (err) {
-    return next(new HttpError('Nepodařilo se hlasovat', 500))
+    return next(new HttpError("Nepodařilo se hlasovat", 500));
   }
-  res.json({msg: 'success'})
-}
+  res.json({ msg: "success" });
+};
 
-exports.getCanTryLuck = async (req, res, next) => {
-  
-}
+exports.getCanRoll = async (req, res, next) => {
+  let canRoll;
+  const now = new Date();
+  try {
+    const pupil = await User.findById(req.user.userId, "lastRoll");
+
+    // If it's more then 24 hours, pupil can roll
+    canRoll = (now - pupil.lastRoll) / (1000 * 60 * 60) > 24;
+    console.log((now - pupil.lastRoll) / (1000 * 60 * 60) > 24);
+  } catch (error) {
+    return next("Nepodařilo se načíst datum posledního pokusu");
+  }
+  res.json({msg: 'success', canRoll: canRoll})
+};
+
+exports.postRoll = async (req, res, next) => {
+  console.log('ROLL')
+  let text = '';
+  for(let i = 0; i<100; i++) {
+    const points = Math.round(Math.random() * 4 - 1)
+    if (points > 0) text = 'Získal jsi ' + points + ' B. Zkus to zase zítra ;)'
+    if (points < 0) text = 'Přišel jsi o ' + -points + ' B. Zkus to zase zítra ;)'
+    if (points == 0) text = 'Dneska nezískáváš, ani neztrácíš. Zkus to zase zítra ;)'
+    // console.log('points: ', points, 'text: ', text)
+  }
+  try {
+    // await User.findByIdAndUpdate(req.user.userId, { lastRoll: new Date() });
+  } catch (error) {
+    return next("Nepodařilo se uložit datum pokusu");
+  }
+  res.json({msg: 'success', text: text})
+};

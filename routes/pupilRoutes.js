@@ -18,8 +18,11 @@ router.get('/undelivered-orders/:pupilId', pupilCtrl.getUndeliveredOrders)
 router.get('/delivered-orders/:pupilId', pupilCtrl.getDeliveredOrders)
 
 router.post('/buy-product/:productId', pupilCtrl.postBuyProduct)
-router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
+// router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
 
 router.post('/add-vote', pupilCtrl.postVote)
+
+router.get('/can-roll/:pupilId', pupilCtrl.getCanRoll)
+router.post('/roll', pupilCtrl.postRoll)
 
 module.exports = router;

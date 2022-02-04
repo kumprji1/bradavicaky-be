@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const HttpError = require("../models/HttpError");
 const Product = require("../models/Product");
-const Event = require('../models/Event')
+const Event = require("../models/Event");
 const Question = require("../models/Question");
 const Answer = require("../models/Answer");
 
@@ -47,6 +47,7 @@ exports.postRegisterPupil = async (req, res, next) => {
     role: Role.PUPIL,
     college: req.body.college,
     points: 0,
+    lastRoll: new Date("2002", "12", "12"),
   });
 
   // Saving to the database
@@ -193,71 +194,72 @@ exports.patchDeliverOrder = async (req, res, next) => {
   res.json({ msg: "success" });
 };
 
-
 exports.postAddEvent = async (req, res, next) => {
   const event = new Event({
     title: req.body.title,
     description: req.body.description,
     date: req.body.date,
-    createdAt: new Date()
-  })
+    createdAt: new Date(),
+  });
 
   try {
-    await event.save()
+    await event.save();
   } catch (err) {
-    return next(new HttpError('Nepodařilo se uložit událost', 500))
+    return next(new HttpError("Nepodařilo se uložit událost", 500));
   }
-  res.json({msg: 'success'})
-}
+  res.json({ msg: "success" });
+};
 
 exports.deleteEvent = async (req, res, next) => {
   try {
-    await Event.deleteOne({_id: req.params.eventId})
+    await Event.deleteOne({ _id: req.params.eventId });
   } catch (err) {
-    return next(new HttpError('Nepodařilo se odstranit událost', 500))
+    return next(new HttpError("Nepodařilo se odstranit událost", 500));
   }
-  res.json({msg: 'success'})
-}
+  res.json({ msg: "success" });
+};
 
 exports.addQuestion = async (req, res, next) => {
   const question = new Question({
     text: req.body.text,
-    createdAt: new Date()
-  })
+    createdAt: new Date(),
+  });
   let result;
   try {
-    result = await question.save()
+    result = await question.save();
   } catch (err) {
-    return next(new HttpError('Nepodařilo se uložit otázku', 500))
+    return next(new HttpError("Nepodařilo se uložit otázku", 500));
   }
-  console.log(result)
-  res.json({msg: 'success', question: result})
-}
+  console.log(result);
+  res.json({ msg: "success", question: result });
+};
 
 exports.postCreateAnswer = async (req, res, next) => {
   const answer = new Answer({
     text: req.body.text,
     questionId: req.body.questionId,
     createdAt: new Date(),
-    deleted: false
-  })
-  console.log(answer)
+    deleted: false,
+  });
+  console.log(answer);
   let result;
   try {
-    result = await answer.save()
+    result = await answer.save();
   } catch (err) {
-    return next(new HttpError('Nepodařilo se vytvořit odpověď', 500))
+    return next(new HttpError("Nepodařilo se vytvořit odpověď", 500));
   }
-  console.log(result)
-  res.json({msg: 'success', answer: result})
-
-}
+  console.log(result);
+  res.json({ msg: "success", answer: result });
+};
 
 exports.deleteAnswer = async (req, res, next) => {
   try {
-    await Answer.findOneAndUpdate({_id: req.params.answerId}, {deleted: true})
+    await Answer.findOneAndUpdate(
+      { _id: req.params.answerId },
+      { deleted: true }
+    );
   } catch (err) {
-    return next(new HttpError('Nepodařilo se odstranit odpověď', 500))
+    return next(new HttpError("Nepodařilo se odstranit odpověď", 500));
   }
-  res.json({msg: 'success'})
-}
+  res.json({ msg: "success" });
+};

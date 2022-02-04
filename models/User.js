@@ -40,7 +40,11 @@ const userSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Product',
         required: false
-    }]
+    }],
+    lastRoll: {
+        type: Number,
+        required: false
+    }
 })
 
 module.exports = mongoose.model('User', userSchema)
