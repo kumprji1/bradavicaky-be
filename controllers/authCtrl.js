@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
 
 // Models
 const User = require("../models/User");
@@ -9,17 +10,23 @@ const HttpError = require("../models/HttpError");
 const { Role } = require("../utils/roles");
 
 exports.postLogin = async (req, res, next) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new HttpError(errors.errors[0].msg, 422));
+  }
+
   // Finding user
   let user = null;
   try {
     user = await User.findOne({ username: req.body.username }).lean();
   } catch (err) {
-    return next(new HttpError("Server cant reach database", 500));
+    return next(new HttpError("Nepodařilo se vyhledat v databázi", 500));
   }
 
   // Stops loggining process if no user found
   if (!user)
-    return next(new HttpError("No user exists with given username", 400));
+    return next(new HttpError("Uživatel " + req.body.username +" neexistuje", 400));
 
   // Comparing passwords
   let isPasswordCorrect = false;
@@ -30,17 +37,19 @@ exports.postLogin = async (req, res, next) => {
   }
 
   // Stops loggining procces if password is incorrect
-  if (!isPasswordCorrect) return next(new HttpError("Incorrect password", 401));
+  if (!isPasswordCorrect) return next(new HttpError("Nesprávné heslo", 401));
 
   // Generating token
-  user.token = jwt.sign({
-    userId: user._id,
-    username: user.username,
-    name: user.name,
-    surname: user.surname,
-    role: user.role,
-  },
-  'harry_potter_secret_chamber');
+  user.token = jwt.sign(
+    {
+      userId: user._id,
+      username: user.username,
+      name: user.name,
+      surname: user.surname,
+      role: user.role,
+    },
+    "harry_potter_secret_chamber"
+  );
 
   // Removing password before sending to client
   user.password = null;
@@ -49,6 +58,12 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.postRegisterAdmin = async (req, res, next) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new HttpError(errors.errors[0].msg, 422));
+  }
+
   // Finding existing admin
   let existAdmin = false;
   try {
@@ -58,10 +73,11 @@ exports.postRegisterAdmin = async (req, res, next) => {
   }
 
   // Only 1 admin is alowed
-  if (existAdmin) return next(new HttpError("Admin already exists!", 401));
+  if (existAdmin) return next(new HttpError("Jeden admin vládne všem. Více adminů není povoleno", 401));
 
   // Comparing passwords
-  if (req.body.password !== req.body.rePassword) return next(new HttpError("Passwords don't match!", 401));
+  if (req.body.password !== req.body.rePassword)
+    return next(new HttpError("Hesla se neshodují", 401));
 
   let hashedPassword = "";
 
@@ -87,5 +103,5 @@ exports.postRegisterAdmin = async (req, res, next) => {
     return next(new HttpError("Nepodařilo se uložit učitele", 500));
   }
 
-  res.json({msg: 'Admin created!'})
+  res.json({ msg: "Admin created!" });
 };

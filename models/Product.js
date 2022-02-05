@@ -16,12 +16,12 @@ const productSchema = new Schema({
         required: false
     },
     price: {
-        type: String,
+        type: Number,
         required: true
     },
     // Remaining count of pieces left
     quantity: {
-        type: String,
+        type: Number,
         required: true
     },
     // Product is shown to pupils or not

@@ -1,10 +1,15 @@
-const express = require('express');
+const express = require("express");
 
-const authCtrl = require('../controllers/authCtrl')
+const authCtrl = require("../controllers/authCtrl");
+const authVldt = require("../validations/authVlds");
 
 const router = express.Router();
 
-router.post('/login', authCtrl.postLogin)
-router.post('/register-admin', authCtrl.postRegisterAdmin)
+router.post("/login", authVldt.postLogin, authCtrl.postLogin);
+router.post(
+  "/register-admin",
+  authVldt.postRegisterAdmin,
+  authCtrl.postRegisterAdmin
+);
 
 module.exports = router;

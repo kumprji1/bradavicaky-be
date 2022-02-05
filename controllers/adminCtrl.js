@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const { validationResult } = require('express-validator')
 
 // Models
 const User = require("../models/User");
@@ -11,9 +12,13 @@ const Answer = require("../models/Answer");
 // Utils
 const { Role } = require("../utils/roles");
 const Order = require("../models/Order");
-const res = require("express/lib/response");
+
 
 exports.postRegisterPupil = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   // Finding existing user with given username
   let existsPupil = false;
   try {
@@ -24,11 +29,11 @@ exports.postRegisterPupil = async (req, res, next) => {
 
   // Username has to be unique
   if (existsPupil)
-    return next(new HttpError("User with given username already exists", 401));
+    return next(new HttpError("Uživatel " + req.body.username + ' již existuje', 401));
 
   // Comparing passwords
   if (req.body.password !== req.body.rePassword)
-    return next(new HttpError("Passwords don't match!", 401));
+    return next(new HttpError("Hesla se neshodují", 401));
 
   let hashedPassword = "";
 
@@ -124,6 +129,10 @@ exports.getProducts = async (req, res, next) => {
 
 // Adds new product
 exports.postAddProduct = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   const newProduct = new Product({
     title: req.body.title,
     photo: req.body.photo,

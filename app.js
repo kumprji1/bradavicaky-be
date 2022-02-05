@@ -45,8 +45,12 @@ app.use((req, res) => {
 // Handeling errors
 app.use((error, req, res, next) => {
 	console.log(error);
-	res.json(error)
-})
+	if (res.headerSent) {
+		return next(error);
+	}
+	res.status(error.code || 500);
+	res.json({ msg: error.message || 'Nastala neznámá chyba' });
+});
 
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.orv11.mongodb.net/${process.env.DB_DATABASE}?retryWrites=true`)
 .then(() => {
