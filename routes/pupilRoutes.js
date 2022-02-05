@@ -20,8 +20,10 @@ router.get('/delivered-orders/:pupilId', pupilCtrl.getDeliveredOrders)
 router.post('/buy-product/:productId', pupilCtrl.postBuyProduct)
 // router.post('/refund-product/:productId', pupilCtrl.postRefundProduct)
 
+// Vote
 router.post('/add-vote', pupilCtrl.postVote)
 
+// Try Luck
 router.get('/can-roll/:pupilId', pupilCtrl.getCanRoll)
 router.post('/roll', pupilCtrl.postRoll)
 

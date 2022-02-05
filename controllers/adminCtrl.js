@@ -156,6 +156,10 @@ exports.postAddProduct = async (req, res, next) => {
 };
 
 exports.patchEditProduct = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   try {
     await Product.findByIdAndUpdate(req.params.productId, {
       title: req.body.title,
@@ -242,6 +246,10 @@ exports.patchDeliverOrder = async (req, res, next) => {
 };
 
 exports.postAddEvent = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   const event = new Event({
     title: req.body.title,
     description: req.body.description,
@@ -267,6 +275,10 @@ exports.deleteEvent = async (req, res, next) => {
 };
 
 exports.addQuestion = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   const question = new Question({
     text: req.body.text,
     createdAt: new Date(),
@@ -282,6 +294,10 @@ exports.addQuestion = async (req, res, next) => {
 };
 
 exports.editQuestion = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   try {
     await Question.findByIdAndUpdate(req.params.questionId, { text: req.body.text });
   } catch (err) {
@@ -291,6 +307,10 @@ exports.editQuestion = async (req, res, next) => {
 };
 
 exports.postCreateAnswer = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) 
+  return next(new HttpError(errors.errors[0].msg, 500))
+
   const answer = new Answer({
     text: req.body.text,
     questionId: req.body.questionId,

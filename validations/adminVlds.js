@@ -23,3 +23,16 @@ exports.addOrEditProduct = [
     .isNumeric()
     .withMessage("Množství musí být číslo"),
 ];
+
+exports.postAddOrEditEvent = [
+  check("title").notEmpty().withMessage("Zadejte název"),
+  check("description").notEmpty().withMessage("Zadejte popis"),
+];
+
+exports.postAddOrEditQuestion = [
+  check("text").notEmpty().withMessage("Zadejte text otázky"),
+];
+
+exports.postAddAnswer = [
+  check("text").notEmpty().withMessage("Napiště text odpovědi"),
+];

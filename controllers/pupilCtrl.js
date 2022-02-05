@@ -227,7 +227,6 @@ exports.getCanRoll = async (req, res, next) => {
 
     // If it's more then 24 hours, pupil can roll
     canRoll = (now - pupil.lastRoll) / (1000 * 60 * 60) > 24;
-    console.log((now - pupil.lastRoll) / (1000 * 60 * 60) > 24);
   } catch (error) {
     return next("Nepodařilo se načíst datum posledního pokusu");
   }
@@ -237,11 +236,11 @@ exports.getCanRoll = async (req, res, next) => {
 exports.postRoll = async (req, res, next) => {
   let text = "";
   const points = Math.round(Math.random() * 4 - 1);
-  if (points > 0) text = "Získal jsi " + points + " B. Zkus to zase zítra ;)";
+  if (points > 0) text = "Získal jsi " + points + " B.";
   if (points < 0)
-    text = "Přišel jsi o " + -points + " B. Zkus to zase zítra ;)";
+    text = "Přišel jsi o " + -points + " B.";
   if (points == 0)
-    text = "Dneska nezískáváš, ani neztrácíš. Zkus to zase zítra ;)";
+    text = "Dneska nezískáváš, ani neztrácíš.";
   // console.log('points: ', points, 'text: ', text)
 
   try {
@@ -251,7 +250,7 @@ exports.postRoll = async (req, res, next) => {
       $inc: { points: points },
     });
   } catch (error) {
-    return next("Nepodařilo se uložit datum pokusu");
+    return next(new HttpError("Nepodařilo se uložit datum pokusu", 500));
   }
   res.json({ msg: "success", text: text });
 };
