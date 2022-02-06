@@ -7,12 +7,12 @@ const isPupil = require('../middlewares/isPupil');
 
 const router = express.Router();
 
+// Below only authorized routes for pupil
+router.use(readToken, isPupil) 
+
 router.get('/points/:username', pupilCtrl.getPointsByUsername)
 
 router.get('/avaible-products', pupilCtrl.getAvaibleProducts)
-
-// Below only authorized routes for pupil
-router.use(readToken, isPupil) 
 
 router.get('/undelivered-orders/:pupilId', pupilCtrl.getUndeliveredOrders)
 router.get('/delivered-orders/:pupilId', pupilCtrl.getDeliveredOrders)

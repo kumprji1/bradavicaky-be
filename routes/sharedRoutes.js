@@ -2,7 +2,11 @@ const express = require('express');
 
 const sharedCtrl = require('../controllers/sharedCtrl')
 
+const readToken = require('../middlewares/readToken')
+
 const router = express.Router();
+
+router.use(readToken) 
 
 router.get('/products', sharedCtrl.getProducts)
 
