@@ -37,6 +37,7 @@ router.delete('/event/:eventId', adminCtrl.deleteEvent)
 // Questions
 router.post('/add-question', adminVlds.postAddOrEditQuestion, adminCtrl.addQuestion)
 router.patch('/edit-question/:questionId', adminVlds.postAddOrEditQuestion, adminCtrl.editQuestion)
+router.delete('/question/:questionId', adminCtrl.deleteQuestion)
 
 // Answers
 router.post('/create-answer', adminVlds.postAddAnswer, adminCtrl.postCreateAnswer)

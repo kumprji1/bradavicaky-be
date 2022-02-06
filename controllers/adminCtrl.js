@@ -306,6 +306,16 @@ exports.editQuestion = async (req, res, next) => {
   res.json({ msg: "success"});
 };
 
+exports.deleteQuestion = async (req, res, next) => {
+  try {
+    await Question.deleteOne({ _id: req.params.questionId });
+  } catch (err) {
+    return next(new HttpError("Nepodařilo se odstranit otázku", 500));
+  }
+  res.json({ msg: "success" });
+};
+
+
 exports.postCreateAnswer = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) 

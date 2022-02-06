@@ -20,7 +20,7 @@ exports.getProducts = async (req, res, next) => {
 exports.getEvents = async (req, res, next) => {
     let events = [];
     try {
-        events = await Event.find();
+        events = await Event.find().sort({date: 1});
     } catch (err) {
         return next(new HttpError('Nepodařilo se načíst události', 500))
     }
